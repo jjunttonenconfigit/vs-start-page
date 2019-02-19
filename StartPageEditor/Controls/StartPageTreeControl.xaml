@@ -1,0 +1,66 @@
+﻿<UserControl x:Class="StartPageEditor.Controls.StartPageTreeControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+              xmlns:fa="http://schemas.fontawesome.io/icons/"
+              xmlns:cvt="clr-namespace:StartPageEditor.Converters"
+              xmlns:hp="clr-namespace:StartPageEditor.Helpers"
+             xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300" Loaded="StartPageTreeControl_Loaded">
+  <UserControl.Resources>
+    <cvt:ProjectTreeSortConverter x:Key="ProjectSortConverter"></cvt:ProjectTreeSortConverter>
+    <CollectionViewSource x:Key="ProjectGroupsCollectionSource" Source="{Binding ProjectGroups}" IsLiveSortingRequested="True">
+      <CollectionViewSource.SortDescriptions>
+        <scm:SortDescription PropertyName="Index" />
+      </CollectionViewSource.SortDescriptions>
+    </CollectionViewSource>
+  </UserControl.Resources>
+  <DockPanel>
+    <ToolBar Height="26" DockPanel.Dock="Top">
+      <Button Height="24" Width="24" fa:Awesome.Content="ArrowDown" Name="MoveDownButton" Command="{Binding MoveSelectedTreeItemCommand}" CommandParameter="{x:Static hp:Direction.Down}"/>
+      <Button Height="24" Width="24" fa:Awesome.Content="ArrowUp" Name="MoveUpButton"  Command="{Binding MoveSelectedTreeItemCommand}" CommandParameter="{x:Static hp:Direction.Up}"/>
+    </ToolBar>
+    <TreeView Name="StartPageTree" DockPanel.Dock="Bottom" ItemsSource="{Binding Source={StaticResource ProjectGroupsCollectionSource},Path=.,Mode=TwoWay}" 
+              SelectedItemChanged="StartPageTree_SelectedItemChanged" AllowDrop="True">
+      <!--<TreeView.ItemContainerStyle>
+        <Style TargetType="{x:Type TreeViewItem}">
+          <EventSetter Event="TreeViewItem.DragOver"  Handler="startPageTree_DragOver"/>
+          <EventSetter Event="TreeViewItem.Drop" Handler="startPageTree_Drop"/>
+          <EventSetter Event="TreeViewItem.MouseMove" Handler="startPageTree_MouseMove"/>
+        </Style>
+      </TreeView.ItemContainerStyle>-->
+      <TreeView.ItemTemplate>
+        <HierarchicalDataTemplate ItemsSource="{Binding Projects,Converter={StaticResource ProjectSortConverter},ConverterParameter=Index,UpdateSourceTrigger=PropertyChanged}">
+          <HierarchicalDataTemplate.ItemTemplate>
+            <DataTemplate>
+              <Grid HorizontalAlignment="Stretch">
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition Width="430"/>
+                </Grid.ColumnDefinitions>
+                <!-- support multiselect-->
+                <!--<TextBlock Foreground="Black" Background="{Binding IsSelected,Converter={StaticResource SelectedItemBackgroundConverter},Mode=TwoWay}" Text="{Binding Name}" Grid.Column="0"/>-->
+                <TextBlock Text="{Binding Name}" Grid.Column="0"/>
+              </Grid>
+            </DataTemplate>
+          </HierarchicalDataTemplate.ItemTemplate>
+          <StackPanel Orientation="Horizontal" x:Name="ProjectGroupGrid">
+            
+            <Grid HorizontalAlignment="Stretch">
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="350" />
+                <ColumnDefinition Width="45" />
+              </Grid.ColumnDefinitions>
+              <!-- support multiselect-->
+              <!--<TextBlock Foreground="Black" Background="{Binding IsSelected,Converter={StaticResource SelectedItemBackgroundConverter},Mode=TwoWay}" Text="{Binding Name}" Grid.Column="0"/>-->
+              <TextBlock Text="{Binding Name}" Grid.Column="0"/>
+              <Border BorderBrush="Black" Background="{Binding Background, TargetNullValue='White'}" BorderThickness="1" Grid.Column="1">
+              </Border>
+            </Grid>
+          </StackPanel>
+        </HierarchicalDataTemplate>
+      </TreeView.ItemTemplate>
+    </TreeView>
+  </DockPanel>
+</UserControl>

@@ -1,0 +1,45 @@
+﻿<Window x:Class="StartPageEditor.StartPageConfiguratorForm"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        x:Name="StartPageConfiguratorWindow"
+        mc:Ignorable="d"
+        FontSize="14"
+        DataContext="{Binding StartPageConfiguratorViewModel, Source={StaticResource ViewModelLocator}}"
+
+        Title="StartPageConfiguratorWindow" Height="375" Width="630" WindowStartupLocation="CenterScreen">
+  <Grid>
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="450"/>
+      <ColumnDefinition Width="*"/>
+    </Grid.ColumnDefinitions>
+    <DockPanel>
+      <StackPanel Orientation="Vertical" DockPanel.Dock="Left" Margin="10">
+        <GroupBox Header="Project file extensions">
+          <ListBox ItemsSource="{Binding AppSettings.ProjectFileExtensions}" HorizontalAlignment="Stretch" Height="200" BorderThickness="0" Margin="10" VerticalAlignment="Stretch">
+            <ListBox.ItemTemplate>
+              <DataTemplate>
+                <StackPanel Orientation="Horizontal">
+                  <CheckBox IsChecked="{Binding IsSelected}" Content="{Binding Extension}" Width="120"/>
+                  <TextBlock Text="{Binding Description}"/>
+                </StackPanel>
+              </DataTemplate>
+            </ListBox.ItemTemplate>
+          </ListBox>
+        </GroupBox>
+        <GroupBox Header="Grouping">
+          <StackPanel Orientation="Horizontal" Margin="10">
+            <TextBlock>Sub-directory level:</TextBlock>
+            <TextBox Width="100" Margin="10,0,0,0" Text="{Binding AppSettings.GroupAtDirectoryLevel}"/>
+          </StackPanel>
+        </GroupBox>
+      </StackPanel>
+    </DockPanel>
+    <DockPanel DockPanel.Dock="Right" Grid.Column="1" HorizontalAlignment="Stretch">
+      <StackPanel Orientation="Vertical" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="20">
+        <Button Content="Save" VerticalAlignment="Top" Name="SavePageButton" Width="95" Height="32" Margin="10" Command="{Binding SaveConfigurationCommand}" CommandParameter="{Binding ElementName=StartPageConfiguratorWindow}"/>
+      </StackPanel>
+    </DockPanel>
+  </Grid>
+</Window>

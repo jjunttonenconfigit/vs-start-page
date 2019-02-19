@@ -1,0 +1,103 @@
+﻿<Window x:Class="StartPageEditor.StartPageEditorForm"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:ec="clr-namespace:StartPageEditor.Controls"
+        xmlns:fa="http://schemas.fontawesome.io/icons/"
+        xmlns:c="clr-namespace:StartPageEditor.Converters"
+        xmlns:md="clr-namespace:StartPageEditor.Models"
+        x:Name="StartPageEditor"
+        mc:Ignorable="d"
+        xmlns:h="clr-namespace:StartPageEditor.Helpers"
+        DataContext="{Binding StartPageViewModel, Source={StaticResource ViewModelLocator}}"
+        Title="StartPageEditor" Height="700" Width="1000" FontSize="14" WindowStartupLocation="CenterScreen">
+  <Window.Resources>
+    <c:InvertedBoolenConverter x:Key="InvertedBoolConverter"/>
+    <h:NullIfNotTypeConverter x:Key="NullIfNotTypeConverter"></h:NullIfNotTypeConverter>
+  </Window.Resources>
+
+  <DockPanel HorizontalAlignment="Stretch" LastChildFill="True" VerticalAlignment="Stretch">
+    <ToolBarTray DockPanel.Dock="Top" HorizontalAlignment="Stretch">
+      <ToolBar Height="45" VerticalAlignment="Stretch" >
+        <Button Name="NewPageButton" Width="95" Command="{Binding CreatePageCommand}" VerticalAlignment="Top" Height="40">
+          <StackPanel Orientation="Horizontal">
+            <Image Source="Resources/NewPageIcon.ico" Height="16" Width="16"/>
+            <Label Padding="5">New Page</Label>
+          </StackPanel>
+        </Button>
+        <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
+        <Button Name="SavePageButton" IsEnabled="{Binding IsDirty,Mode=OneWay}" Width="95" Height="40" Margin="0,6,0,7" Command="{Binding SavePageCommand}">
+          <StackPanel Orientation="Horizontal">
+            <Image Source="Resources/SavePageIcon.ico" Height="16" Width="16"/>
+            <Label Padding="5">Save</Label>
+          </StackPanel>
+        </Button>
+        <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
+        <Label VerticalAlignment="Center" Content="Start Page:"/>
+        <ComboBox x:Name="StartPageFiles" IsEnabled="{Binding IsBusy,Converter={StaticResource InvertedBoolConverter}}" ItemsSource="{Binding StartPageFiles}" SelectedItem="{Binding SelectedStartPage,Mode=TwoWay}" Height="23"  Width="262" VerticalAlignment="Center"/>
+        <Button Name="PreviewPageButton" Width="95" Height="40" Command="{Binding PreviewPageCommand}">
+          <StackPanel Orientation="Horizontal">
+            <Image Source="Resources/PreviewPageIcon.ico" Height="16" Width="16"/>
+            <Label Padding="5">Preview</Label>
+          </StackPanel>
+        </Button>
+        <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
+        <Button Name="AddGroupButtonDropdown" Height="40" Width="120" Command="{Binding AddGroupButtonDropdownCommand}" CommandParameter="{Binding RelativeSource={RelativeSource Self}}">
+          <Button.ContextMenu>
+            <ContextMenu >
+              <MenuItem Header="Add From Folder" Command="{Binding AddGroupFromFolderCommand}"/>
+              <MenuItem Header="Add Blank" Command="{Binding AddEmptyGroupCommand}"/>
+            </ContextMenu>
+          </Button.ContextMenu>
+          <Button.Content>
+            <StackPanel Orientation="Horizontal">
+              <fa:ImageAwesome Name="ProgressIndicator" Icon="PlusCircle" Spin="{Binding IsBusy}" Height="16" Width="16" Visibility="Visible" />
+              <TextBlock Text=" Add Group"/>
+              <Path x:Name="BtnArrow" Margin="4" VerticalAlignment="Center" Width="6" Fill="#FF527DB5" Stretch="Uniform" HorizontalAlignment="Right" Data="F1 M 301.14,-189.041L 311.57,-189.041L 306.355,-182.942L 301.14,-189.041 Z "/>
+            </StackPanel>
+          </Button.Content>
+        </Button>
+        <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
+        <Button Name="ConfigureButton" Width="95" Height="40" Margin="0,6,0,7" Command="{Binding ConfigureFormCommand}">
+          <StackPanel Orientation="Horizontal">
+            <Image Source="Resources/Configure.ico" Height="16" Width="16"/>
+            <Label Padding="5">Configure</Label>
+          </StackPanel>
+        </Button>
+      </ToolBar>
+    </ToolBarTray>
+    <Grid>
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="500"/>
+        <ColumnDefinition Width="*"/>
+      </Grid.ColumnDefinitions>
+      <DockPanel>
+        <ec:StartPageTreeControl x:Name="StartPageTreeControl" SelectedItem="{Binding SelectedItem,Mode=TwoWay}" DockPanel.Dock="Bottom" AllowDrop="True"></ec:StartPageTreeControl>
+      </DockPanel>
+      <GridSplitter Width="5" HorizontalAlignment="Right" VerticalAlignment="Stretch" ResizeBehavior="CurrentAndNext"/>
+      <DockPanel Grid.Column="1">
+        <StackPanel>
+          <ContentControl Content="{Binding ElementName=StartPageTreeControl, Path=SelectedItem}">
+            <ContentControl.Resources>
+              <DataTemplate DataType="{x:Type md:ProjectGroupViewModel}">
+                <ec:ProjectGroupEditorControl 
+                  DataContext="{Binding ElementName=StartPageEditor,Path=DataContext}" 
+                  ProjectGroup="{Binding ElementName=StartPageTreeControl, Path=SelectedItem,Converter={StaticResource NullIfNotTypeConverter}}" 
+                  x:Name="ProjectGroupEditorControl">
+                </ec:ProjectGroupEditorControl>
+              </DataTemplate>
+              <DataTemplate DataType="{x:Type md:ProjectViewModel}">
+                <ec:ProjectEditorControl 
+                  DataContext="{Binding ElementName=StartPageEditor,Path=DataContext}" 
+                  Project="{Binding ElementName=StartPageTreeControl, Path=SelectedItem,Converter={StaticResource NullIfNotTypeConverter}}" 
+                  x:Name="ProjectEditorControl">
+                </ec:ProjectEditorControl>
+              </DataTemplate>
+            </ContentControl.Resources>
+          </ContentControl>
+        </StackPanel>
+      </DockPanel>
+    </Grid>
+  </DockPanel>
+</Window>

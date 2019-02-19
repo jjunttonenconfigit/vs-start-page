@@ -1,0 +1,35 @@
+﻿<UserControl x:Class="StartPageControl.StartPageViewerControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:ec="clr-namespace:StartPageControl.Controls"
+             xmlns:l="clr-namespace:StartPageControl.Helpers"
+             xmlns:m="clr-namespace:StartPageControl.Models"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300"
+             FontFamily="Arial"
+             l:SizeObserver.Observe="True"
+             l:SizeObserver.ObservedHeight="{Binding Height, Mode=OneWayToSource}"
+             Loaded="StartPageViewerControl_Loaded">
+  <UserControl.Resources>
+    <Style TargetType="{x:Type ec:ProjectButton}">
+      <Setter Property="FontSize" Value="12"/>
+      <Setter Property="Background" Value="White"/>
+      <EventSetter Event="Click" Handler="ProjectButton_Click"/>
+    </Style>
+    <Style TargetType="{x:Type ec:ProjectGroupControl}">
+      <EventSetter Event="Expanded" Handler="OnProjectGroupExpanded"/>
+      <EventSetter Event="Collapsed" Handler="OnProjectGroupExpanded"/>
+    </Style>
+    <m:StartPageViewerViewModel x:Key="startPageViewerViewModel"/>
+  </UserControl.Resources>
+  <UserControl.DataContext>
+    <Binding Source="{StaticResource startPageViewerViewModel}"/>
+  </UserControl.DataContext>
+  <UserControl.ContextMenu>
+    <ContextMenu ItemsSource="{Binding MenuItems}"/>
+  </UserControl.ContextMenu>
+  <ScrollViewer HorizontalScrollBarVisibility="Auto" Content="{Binding StartPageContent}">
+  </ScrollViewer>
+</UserControl>

@@ -1,0 +1,33 @@
+﻿<UserControl x:Class="StartPageEditor.Controls.ColorPickerDropdownControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             mc:Ignorable="d"
+             d:DesignHeight="25" d:DesignWidth="200"
+             Name="ColorPickerControl">
+  <UserControl.Resources>
+    <ResourceDictionary>
+      <ObjectDataProvider MethodName="GetType" ObjectType="{x:Type sys:Type}" x:Key="colorsTypeOdp">
+        <ObjectDataProvider.MethodParameters>
+          <sys:String>System.Windows.Media.Colors, PresentationCore,Version=3.0.0.0, Culture=neutral,PublicKeyToken=31bf3856ad364e35</sys:String>
+        </ObjectDataProvider.MethodParameters>
+      </ObjectDataProvider>
+      <ObjectDataProvider ObjectInstance="{StaticResource colorsTypeOdp}" MethodName="GetProperties" x:Key="colorPropertiesOdp">
+      </ObjectDataProvider>
+    </ResourceDictionary>
+  </UserControl.Resources>
+  <Grid>
+    <ComboBox Name="colorCombobox" ItemsSource="{Binding Source={StaticResource colorPropertiesOdp}}" SelectedValuePath="Name"  SelectedValue="{Binding ElementName=ColorPickerControl, Path=SelectedColor,Mode=TwoWay}">
+      <ComboBox.ItemTemplate>
+        <DataTemplate>
+          <StackPanel Orientation="Horizontal">
+            <TextBlock Width="20" Height="15" Margin="5" Background="{Binding Name}" VerticalAlignment="Center"/>
+            <TextBlock Text="{Binding Name}" VerticalAlignment="Center"/>
+          </StackPanel>
+        </DataTemplate>
+      </ComboBox.ItemTemplate>
+    </ComboBox>
+  </Grid>
+</UserControl>
